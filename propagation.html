@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moss Propagation Simulation</title>
+    <style>
+        :root {
+            --primary: #4caf50;
+            --light: #f1f8e9;
+            --dark: #2e7d32;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary);
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        #simulation {
+            width: 100%;
+            height: 400px;
+            background-color: #e0f7fa;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            margin-top: 20px;
+        }
+        
+        .moss {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Moss Propagation Simulation</h1>
+        <div class="controls">
+            <label for="expansionRate">Expansion Rate: <span id="expansionRateValue">1</span></label>
+            <input type="range" id="expansionRate" min="1" max="5" value="1">
+            
+            <label for="initialPopulation">Initial Population: <span id="initialPopulationValue">10</span></label>
+            <input type="range" id="initialPopulation" min="1" max="50" value="10">
+        </div>
+        
+        <div id="simulation"></div>
+    </div>
+    
+    <script>
+        const simulation = document.getElementById('simulation');
+        const expansionRateInput = document.getElementById('expansionRate');
+        const initialPopulationInput = document.getElementById('initialPopulation');
+        const expansionRateValue = document.getElementById('expansionRateValue');
+        const initialPopulationValue = document.getElementById('initialPopulationValue');
+        
+        let mosses = [];
+        let expansionRate = parseInt(expansionRateInput.value);
+        let initialPopulation = parseInt(initialPopulationInput.value);
+        
+        function createMoss(x, y) {
+            const moss = document.createElement('div');
+            moss.className = 'moss';
+            moss.style.transform = `translate(${x}px, ${y}px)`;
+            simulation.appendChild(moss);
+            mosses.push(moss);
+        }
+        
+        function initializeMosses() {
+            mosses.forEach(moss => simulation.removeChild(moss));
+            mosses = [];
+            for (let i = 0; i < initialPopulation; i++) {
+                const x = Math.random() * (simulation.clientWidth - 5);
+                const y = Math.random() * (simulation.clientHeight - 5);
+                createMoss(x, y);
+            }
+        }
+        
+        function expandMosses() {
+            const newMosses = [];
+            mosses.forEach(moss => {
+                for (let i = 0; i < expansionRate; i++) {
+                    const x = parseFloat(moss.style.transform.split('(')[1].split(',')[0]) + (Math.random() * 20 - 10);
+                    const y = parseFloat(moss.style.transform.split(',')[1]) + (Math.random() * 20 - 10);
+                    if (x >= 0 && x <= simulation.clientWidth - 5 && y >= 0 && y <= simulation.clientHeight - 5) {
+                        newMosses.push({ x, y });
+                    }
+                }
+            });
+            newMosses.forEach(({ x, y }) => createMoss(x, y));
+        }
+        
+        expansionRateInput.addEventListener('input', () => {
+            expansionRate = parseInt(expansionRateInput.value);
+            expansionRateValue.textContent = expansionRate;
+        });
+        
+        initialPopulationInput.addEventListener('input', () => {
+            initialPopulation = parseInt(initialPopulationInput.value);
+            initialPopulationValue.textContent = initialPopulation;
+            initializeMosses();
+        });
+        
+        initializeMosses();
+        setInterval(expandMosses, 1000);
+    </script>
+</body>
+</html>

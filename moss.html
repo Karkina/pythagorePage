@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moss Propagation Interactive Guide</title>
+    <style>
+      :root {
+        --primary: #4caf50;
+        --primary-dark: #388e3c;
+        --secondary: #8bc34a;
+        --accent: #cddc39;
+        --light: #f1f8e9;
+        --dark: #2e7d32;
+        --success: #66bb6a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        background-color: var(--light);
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--accent) 100%
+        );
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        margin-bottom: 40px;
+      }
+
+      header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        opacity: 0.9;
+      }
+
+      section {
+        margin-bottom: 60px;
+        padding: 30px;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-size: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+      }
+
+      h3 {
+        color: var(--accent);
+        margin: 20px 0 10px;
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin-bottom: 20px;
+      }
+
+      .visualization {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin: 40px 0;
+      }
+
+      .simulation-container {
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      #simulation {
+        width: 100%;
+        height: 400px;
+        background-color: #e0f7fa;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid var(--primary);
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .moss {
+        position: absolute;
+        background-color: var(--primary);
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .controls {
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .slider-container {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--dark);
+      }
+
+      input[type="range"] {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .value-display {
+        display: inline-block;
+        min-width: 60px;
+        text-align: center;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .result {
+        background-color: var(--light);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border-left: 4px solid var(--success);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        grid-column: 1 / -1;
+      }
+
+      .timeline {
+        position: relative;
+        max-width: 1200px;
+        margin: 40px auto;
+      }
+
+      .timeline::after {
+        content: "";
+        position: absolute;
+        width: 6px;
+        background-color: var(--primary);
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+        border-radius: 10px;
+      }
+
+      .timeline-item {
+        padding: 10px 40px;
+        position: relative;
+        width: 50%;
+        box-sizing: border-box;
+      }
+
+      .timeline-item::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        border: 4px solid var(--secondary);
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .left {
+        left: 0;
+        text-align: right;
+      }
+
+      .right {
+        left: 50%;
+      }
+
+      .left::after {
+        right: -14px;
+      }
+
+      .right::after {
+        left: -14px;
+      }
+
+      .timeline-content {
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-content h3 {
+        margin-top: 0;
+        color: var(--secondary);
+      }
+
+      .applications {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        margin: 30px 0;
+      }
+
+      .application-card {
+        flex: 1 1 300px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .application-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-image {
+        height: 160px;
+        background-color: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark);
+        font-size: 2rem;
+      }
+
+      .card-content {
+        padding: 20px;
+      }
+
+      .stats {
+        background-color: var(--light);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        flex: 1 1 200px;
+        text-align: center;
+        padding: 10px;
+      }
+      .formula {
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 1.2rem;
+        margin: 20px 0;
+        border-left: 4px solid #4caf50; /* Use a color that matches your theme */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-family: "Courier New", Courier, monospace; /* Use a monospace font for clarity */
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: var(--dark);
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        margin-top: 50px;
+      }
+
+      button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+        margin-right: 10px;
+      }
+
+      button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .terrain-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .terrain-option {
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #e0e0e0;
+        transition: all 0.3s;
+      }
+
+      .terrain-option.active {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 2.5rem;
+        }
+
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .timeline::after {
+          left: 31px;
+        }
+
+        .timeline-item {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+        }
+
+        .timeline-item::after {
+          left: 17px;
+        }
+
+        .left {
+          left: 0;
+          text-align: left;
+        }
+
+        .right {
+          left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Moss Propagation Interactive Guide</h1>
+        <p>
+          Explore the fascinating world of moss, its origins, propagation
+          methods, and observe a realistic simulation of how it colonizes
+          different environments.
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="introduction">
+        <h2>Introduction</h2>
+        <p>
+          Mosses are small, non-vascular plants that play a crucial role in
+          ecosystems. These remarkable plants can thrive in diverse environments
+          from moist forests to urban concrete, adapting their growth patterns
+          based on environmental conditions.
+        </p>
+
+        <p>
+          Unlike most plants, mosses lack true roots, stems, and leaves.
+          Instead, they have rhizoids for anchoring, and their simple structures
+          allow them to absorb water and nutrients directly through their
+          surfaces. This unique biology influences their propagation methods and
+          growth patterns.
+        </p>
+      </section>
+
+      <section id="mathematics">
+        <h2>Mathematics Behind Moss Propagation</h2>
+        <p>
+          Moss propagation can be modeled using mathematical equations that
+          account for environmental factors and intrinsic growth
+          characteristics. These equations help us understand and predict moss
+          behavior under varying conditions.
+        </p>
+
+        <h3>Growth Rate Equation</h3>
+        <p>The growth rate $G$ of moss can be expressed as:</p>
+        <div class="formula">
+          <p>$G = R \times H(h) \times L(l)$</p>
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li>
+            $R$ is the intrinsic growth rate, a constant specific to the moss
+            species.
+          </li>
+          <li>
+            $H(h)$ is the humidity factor, a function of humidity $h$, defined
+            as: $H(h) = \begin{cases} 0.3 & \text{if } h < 30 \\ 0.7 & \text{if
+            } 30 \leq h < 50 \\ 0.9 & \text{if } 50 \leq h < 70 \\ 1.0 &
+            \text{if } h \geq 70 \end{cases}$
+          </li>
+          <li>
+            $L(l)$ is the light factor, a function of light $l$, defined as:
+            $L(l) = \begin{cases} 0.5 & \text{if } l < 20 \\ 0.9 & \text{if } 20
+            \leq l < 40 \\ 1.0 & \text{if } 40 \leq l < 70 \\ 0.7 & \text{if }
+            70 \leq l < 85 \\ 0.4 & \text{if } l \geq 85 \end{cases}$
+          </li>
+        </ul>
+
+        <h3>Propagation Probability</h3>
+        <p>
+          The probability $P$ of moss propagation can be modeled as a function
+          of growth stage $s$ and environmental conditions:
+        </p>
+        <div class="formula">
+          <p>$P(s, h, l) = \alpha \times s \times H(h) \times L(l)$</p>
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li>
+            $\alpha$ is a propagation constant, representing the likelihood of
+            new moss patches forming.
+          </li>
+          <li>
+            $s$ is the growth stage, with values ranging from 0 (new) to 3
+            (mature).
+          </li>
+        </ul>
+
+        <h3>Spread Distance</h3>
+        <p>
+          The average spread distance $D$ of new moss patches can be influenced
+          by terrain and environmental factors:
+        </p>
+        <div class="formula">
+          <p>$D = \beta \times T(t) \times H(h) \times L(l)$</p>
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li>
+            $\beta$ is a distance constant, representing the typical spread
+            range.
+          </li>
+          <li>
+            $T(t)$ is the terrain factor, a function of terrain type $t$,
+            affecting spread distance.
+          </li>
+        </ul>
+
+        <p>
+          These mathematical models provide a comprehensive framework for
+          simulating moss propagation, aiding in ecological research and
+          conservation planning.
+        </p>
+      </section>
+      <section id="visualization">
+        <h2>Interactive Moss Simulation</h2>
+        <p>
+          Observe how moss spreads in different environmental conditions. This
+          simulation demonstrates how moss patches expand, interact with each
+          other, and respond to environmental factors.
+        </p>
+
+        <div class="terrain-selector">
+          <div class="terrain-option active" data-terrain="forest">
+            Forest Floor
+          </div>
+          <div class="terrain-option" data-terrain="rock">Rocky Surface</div>
+          <div class="terrain-option" data-terrain="urban">
+            Urban Environment
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="slider-container">
+            <label for="humidity"
+              >Humidity:
+              <span id="humidityValue" class="value-display">50%</span></label
+            >
+            <input
+              type="range"
+              id="humidity"
+              min="0"
+              max="100"
+              value="50"
+              step="1"
+            />
+          </div>
+
+          <div class="slider-container">
+            <label for="light"
+              >Light Exposure:
+              <span id="lightValue" class="value-display">Medium</span></label
+            >
+            <input
+              type="range"
+              id="light"
+              min="0"
+              max="100"
+              value="50"
+              step="1"
+            />
+          </div>
+
+          <div class="slider-container">
+            <label for="initialPopulation"
+              >Initial Spores:
+              <span id="initialPopulationValue" class="value-display"
+                >10</span
+              ></label
+            >
+            <input
+              type="range"
+              id="initialPopulation"
+              min="1"
+              max="50"
+              value="10"
+              step="1"
+            />
+          </div>
+
+          <div class="slider-container">
+            <label for="growthRate"
+              >Growth Rate:
+              <span id="growthRateValue" class="value-display">1</span></label
+            >
+            <input
+              type="range"
+              id="growthRate"
+              min="1"
+              max="5"
+              value="1"
+              step="0.5"
+            />
+          </div>
+
+          <div class="result" id="result">
+            Propagation Rate: Moderate<br />
+            Optimal Conditions: Humidity (70-90%), Light (Low to Medium)
+          </div>
+        </div>
+
+        <div class="simulation-container">
+          <div id="simulation"></div>
+          <div class="controls-buttons">
+            <button id="startButton">Start</button>
+            <button id="resetButton">Reset</button>
+            <button id="pauseButton">Pause</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat-item">
+              <div class="stat-value" id="mossCount">0</div>
+              <div class="stat-label">Moss Patches</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="coverage">0%</div>
+              <div class="stat-label">Surface Coverage</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="growth">0</div>
+              <div class="stat-label">Growth Rate</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="propagation">
+        <h2>Propagation Methods</h2>
+        <p>
+          Mosses have evolved several efficient propagation mechanisms that
+          allow them to colonize diverse habitats:
+        </p>
+
+        <h3>Spore Dispersal</h3>
+        <p>
+          Mosses produce microscopic spores that can travel great distances
+          through wind or water. When these spores land in favorable conditions,
+          they germinate to form a protonema (thread-like structure), which
+          eventually develops into a new moss plant.
+        </p>
+
+        <h3>Fragmentation</h3>
+        <p>
+          Small fragments of moss can break off from the parent plant and
+          establish themselves as new individuals if they find suitable growing
+          conditions. This is one of the most common methods of moss propagation
+          in nature.
+        </p>
+
+        <h3>Vegetative Growth</h3>
+        <p>
+          Mosses expand through vegetative growth, with existing plants sending
+          out new shoots that gradually form dense mats or cushions. This method
+          allows moss to quickly colonize an area once established.
+        </p>
+
+        <h3>Specialized Structures</h3>
+        <p>
+          Some mosses develop specialized reproductive structures called gemmae
+          or brood bodies, which are small clusters of cells that can grow into
+          new moss plants when detached from the parent.
+        </p>
+      </section>
+
+      <section id="history">
+        <h2>Historical Origins</h2>
+        <p>
+          Mosses have an ancient lineage dating back hundreds of millions of
+          years:
+        </p>
+
+        <div class="timeline">
+          <div class="timeline-item left">
+            <div class="timeline-content">
+              <h3>Ordovician Period (470 MYA)</h3>
+              <p>
+                The earliest moss-like fossils date back to this period, making
+                mosses among the earliest plants to colonize land.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item right">
+            <div class="timeline-content">
+              <h3>Devonian Period (416-359 MYA)</h3>
+              <p>
+                Mosses diversified alongside other early land plants, developing
+                adaptations to survive in terrestrial environments.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item left">
+            <div class="timeline-content">
+              <h3>Present Day</h3>
+              <p>
+                With over 12,000 species worldwide, mosses have successfully
+                adapted to almost every terrestrial habitat on Earth, from the
+                Arctic to deserts.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="applications">
+        <h2>Ecological Importance</h2>
+        <p>Mosses provide numerous benefits to ecosystems:</p>
+
+        <div class="applications">
+          <div class="application-card">
+            <div class="card-image">🌱</div>
+            <div class="card-content">
+              <h3>Soil Formation</h3>
+              <p>
+                Mosses contribute to soil formation by trapping organic matter
+                and weathering rock surfaces, creating substrate for other
+                plants.
+              </p>
+            </div>
+          </div>
+
+          <div class="application-card">
+            <div class="card-image">💧</div>
+            <div class="card-content">
+              <h3>Water Retention</h3>
+              <p>
+                Mosses can absorb up to 20 times their weight in water, helping
+                regulate moisture levels in forests and preventing soil erosion.
+              </p>
+            </div>
+          </div>
+
+          <div class="application-card">
+            <div class="card-image">🌿</div>
+            <div class="card-content">
+              <h3>Biodiversity Support</h3>
+              <p>
+                Moss colonies provide microhabitats for countless invertebrates
+                and microorganisms, supporting complex food webs.
+              </p>
+            </div>
+          </div>
+
+          <div class="application-card">
+            <div class="card-image">🌍</div>
+            <div class="card-content">
+              <h3>Carbon Sequestration</h3>
+              <p>
+                Mosses play a role in carbon sequestration, helping mitigate
+                climate change by storing carbon in their biomass.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 Moss Propagation Interactive Guide</p>
+      </div>
+    </footer>
+
+    <script>
+      // DOM Elements
+      const simulation = document.getElementById("simulation");
+      const humidityInput = document.getElementById("humidity");
+      const lightInput = document.getElementById("light");
+      const initialPopulationInput =
+        document.getElementById("initialPopulation");
+      const growthRateInput = document.getElementById("growthRate");
+      const humidityValue = document.getElementById("humidityValue");
+      const lightValue = document.getElementById("lightValue");
+      const initialPopulationValue = document.getElementById(
+        "initialPopulationValue"
+      );
+      const growthRateValue = document.getElementById("growthRateValue");
+      const resultDisplay = document.getElementById("result");
+      const startButton = document.getElementById("startButton");
+      const resetButton = document.getElementById("resetButton");
+      const pauseButton = document.getElementById("pauseButton");
+      const mossCountDisplay = document.getElementById("mossCount");
+      const coverageDisplay = document.getElementById("coverage");
+      const growthDisplay = document.getElementById("growth");
+      const terrainOptions = document.querySelectorAll(".terrain-option");
+
+      // Simulation Variables
+      let mosses = [];
+      let simulationState = {
+        humidity: parseInt(humidityInput.value),
+        light: parseInt(lightInput.value),
+        initialPopulation: parseInt(initialPopulationInput.value),
+        growthRate: parseFloat(growthRateInput.value),
+        terrain: "forest",
+        running: false,
+        interval: null,
+        frameCount: 0,
+      };
+
+      // Terrain backgrounds
+      const terrainBackgrounds = {
+        forest: "#e0f7fa",
+        rock: "#e0e0e0",
+        urban: "#bdbdbd",
+      };
+
+      // Moss colors based on terrain
+      const mossColors = {
+        forest: ["#4caf50", "#388e3c", "#2e7d32", "#1b5e20"],
+        rock: ["#8bc34a", "#7cb342", "#689f38", "#558b2f"],
+        urban: ["#689f38", "#558b2f", "#33691e", "#2e7d32"],
+      };
+
+      // Moss class definition
+      class Moss {
+        constructor(x, y, simulation) {
+          this.x = x;
+          this.y = y;
+          this.size = Math.random() * 3 + 2;
+          this.element = document.createElement("div");
+          this.element.className = "moss";
+          this.growthStage = 0;
+          this.maxSize = Math.random() * 15 + 5;
+          this.growth = 0;
+          this.color =
+            mossColors[simulationState.terrain][
+              Math.floor(
+                Math.random() * mossColors[simulationState.terrain].length
+              )
+            ];
+          this.active = true;
+
+          // Set initial position and size
+          this.updateAppearance();
+
+          // Add to DOM
+          simulation.appendChild(this.element);
+        }
+
+        updateAppearance() {
+          this.element.style.width = `${this.size}px`;
+          this.element.style.height = `${this.size}px`;
+          this.element.style.transform = `translate(${
+            this.x - this.size / 2
+          }px, ${this.y - this.size / 2}px)`;
+          this.element.style.backgroundColor = this.color;
+
+          // Add some texture/variation with box-shadow
+          const shadowColor = this.color
+            .replace(")", ", 0.7)")
+            .replace("rgb", "rgba");
+          this.element.style.boxShadow = `0 0 ${
+            this.size / 2
+          }px ${shadowColor}`;
+        }
+
+        grow(conditions) {
+          if (!this.active) return false;
+
+          // Calculate growth based on conditions
+          const humidityFactor = this.getHumidityFactor(conditions.humidity);
+          const lightFactor = this.getLightFactor(conditions.light);
+          const environmentFactor = humidityFactor * lightFactor;
+
+          // Apply growth rate
+          this.growth += environmentFactor * conditions.growthRate * 0.05;
+
+          // Update size if enough growth accumulated
+          if (this.growth >= 1) {
+            const growthIncrement = Math.floor(this.growth);
+            this.size += growthIncrement;
+            this.growth -= growthIncrement;
+
+            // Check if max size reached
+            if (this.size >= this.maxSize) {
+              this.size = this.maxSize;
+              this.growthStage = 3; // Mature
+            } else if (this.size >= this.maxSize * 0.7) {
+              this.growthStage = 2; // Established
+            } else if (this.size >= this.maxSize * 0.3) {
+              this.growthStage = 1; // Growing
+            }
+
+            this.updateAppearance();
+            return true;
+          }
+
+          return false;
+        }
+
+        getHumidityFactor(humidity) {
+          // Mosses generally prefer higher humidity
+          if (humidity < 30) return 0.3;
+          if (humidity < 50) return 0.7;
+          if (humidity < 70) return 0.9;
+          return 1.0;
+        }
+
+        getLightFactor(light) {
+          // Mosses generally prefer moderate to low light
+          if (light < 20) return 0.5; // Too dark
+          if (light < 40) return 0.9;
+          if (light < 70) return 1.0; // Optimal
+          if (light < 85) return 0.7;
+          return 0.4; // Too bright
+        }
+
+        canPropagate() {
+          return this.growthStage >= 2 && Math.random() < 0.2;
+        }
+
+        isNear(otherMoss, distance = 30) {
+          const dx = this.x - otherMoss.x;
+          const dy = this.y - otherMoss.y;
+          return Math.sqrt(dx * dx + dy * dy) <= distance;
+        }
+
+        deactivate() {
+          this.active = false;
+          this.element.style.opacity = "0.5";
+        }
+      }
+
+      // Initialize moss patches
+      function initializeMosses() {
+        // Clear existing mosses
+        mosses.forEach((moss) => simulation.removeChild(moss.element));
+        mosses = [];
+
+        // Set terrain background
+        simulation.style.backgroundColor =
+          terrainBackgrounds[simulationState.terrain];
+
+        // Create initial moss patches
+        for (let i = 0; i < simulationState.initialPopulation; i++) {
+          const x = Math.random() * (simulation.clientWidth - 10);
+          const y = Math.random() * (simulation.clientHeight - 10);
+          mosses.push(new Moss(x, y, simulation));
+        }
+
+        // Update stats
+        updateStats();
+      }
+
+      // Propagate moss - create new patches
+      function propagateMosses() {
+        if (!simulationState.running) return;
+
+        const newMosses = [];
+        const conditions = {
+          humidity: simulationState.humidity,
+          light: simulationState.light,
+          growthRate: simulationState.growthRate,
+        };
+
+        // Grow existing mosses
+        mosses.forEach((moss) => {
+          moss.grow(conditions);
+
+          // Check if moss can propagate
+          if (moss.canPropagate()) {
+            // Create 1-3 new moss patches near this one
+            const propagationCount = Math.floor(Math.random() * 3) + 1;
+
+            for (let i = 0; i < propagationCount; i++) {
+              // Calculate position relative to parent moss
+              const distance = Math.random() * 20 + 5;
+              const angle = Math.random() * Math.PI * 2;
+              const newX = moss.x + Math.cos(angle) * distance;
+              const newY = moss.y + Math.sin(angle) * distance;
+
+              // Check if position is within bounds
+              if (
+                newX >= 0 &&
+                newX <= simulation.clientWidth - 5 &&
+                newY >= 0 &&
+                newY <= simulation.clientHeight - 5
+              ) {
+                // Check for overcrowding
+                const overcrowded = mosses.some(
+                  (m) => Math.abs(m.x - newX) < 5 && Math.abs(m.y - newY) < 5
+                );
+
+                if (!overcrowded) {
+                  newMosses.push(new Moss(newX, newY, simulation));
+                }
+              }
+            }
+          }
+        });
+
+        // Add new mosses to the collection
+        mosses = mosses.concat(newMosses);
+
+        // Check for moss patch merging
+        checkForMerges();
+
+        // Update stats
+        updateStats();
+      }
+
+      // Check for moss patches that are close enough to merge
+      function checkForMerges() {
+        for (let i = 0; i < mosses.length; i++) {
+          for (let j = i + 1; j < mosses.length; j++) {
+            const moss1 = mosses[i];
+            const moss2 = mosses[j];
+
+            if (
+              moss1.active &&
+              moss2.active &&
+              moss1.isNear(moss2, moss1.size / 2 + moss2.size / 2 + 2)
+            ) {
+              // Keep the larger moss and deactivate the smaller one
+              if (moss1.size >= moss2.size) {
+                moss1.maxSize += moss2.size * 0.3; // Boost max size
+                moss2.deactivate();
+              } else {
+                moss2.maxSize += moss1.size * 0.3; // Boost max size
+                moss1.deactivate();
+              }
+            }
+          }
+        }
+      }
+
+      // Update simulation stats
+      function updateStats() {
+        const activeMossCount = mosses.filter((m) => m.active).length;
+        mossCountDisplay.textContent = activeMossCount;
+
+        // Calculate approximate coverage
+        let totalArea = 0;
+        mosses.forEach((moss) => {
+          if (moss.active) {
+            totalArea += Math.PI * (moss.size / 2) * (moss.size / 2);
+          }
+        });
+
+        const totalSimulationArea =
+          simulation.clientWidth * simulation.clientHeight;
+        const coveragePercentage = Math.min(
+          100,
+          Math.round((totalArea / totalSimulationArea) * 100)
+        );
+        coverageDisplay.textContent = `${coveragePercentage}%`;
+
+        // Calculate growth rate based on conditions
+        const humidityFactor = simulationState.humidity / 100;
+        const lightFactor =
+          simulationState.light > 70
+            ? 1 - ((simulationState.light - 70) / 30) * 0.5
+            : simulationState.light < 30
+            ? (simulationState.light / 30) * 0.7
+            : 1.0;
+        const growthRate =
+          Math.round(
+            simulationState.growthRate * humidityFactor * lightFactor * 10
+          ) / 10;
+        growthDisplay.textContent = growthRate.toFixed(1);
+
+        // Update result text
+        updateResultText();
+      }
+
+      // Update result text based on current conditions
+      function updateResultText() {
+        let propagationRate = "Low";
+        let optimalHumidity = "";
+        let optimalLight = "";
+
+        // Determine propagation rate
+        if (
+          simulationState.humidity >= 70 &&
+          simulationState.light >= 30 &&
+          simulationState.light <= 70
+        ) {
+          propagationRate = "High";
+        } else if (
+          simulationState.humidity >= 50 &&
+          simulationState.light >= 20 &&
+          simulationState.light <= 80
+        ) {
+          propagationRate = "Moderate";
+        }
+
+        // Determine optimal conditions based on terrain
+        switch (simulationState.terrain) {
+          case "forest":
+            optimalHumidity = "70-95%";
+            optimalLight = "30-60%";
+            break;
+          case "rock":
+            optimalHumidity = "60-85%";
+            optimalLight = "40-70%";
+            break;
+          case "urban":
+            optimalHumidity = "50-80%";
+            optimalLight = "20-50%";
+            break;
+        }
+
+        resultDisplay.innerHTML = `
+                Propagation Rate: <strong>${propagationRate}</strong><br>
+                Optimal Conditions for ${
+                  simulationState.terrain.charAt(0).toUpperCase() +
+                  simulationState.terrain.slice(1)
+                }:<br>
+                Humidity (${optimalHumidity}), Light (${optimalLight})
+            `;
+      }
+
+      // Event Listeners
+      humidityInput.addEventListener("input", () => {
+        simulationState.humidity = parseInt(humidityInput.value);
+        humidityValue.textContent = `${simulationState.humidity}%`;
+        updateStats();
+      });
+
+      lightInput.addEventListener("input", () => {
+        simulationState.light = parseInt(lightInput.value);
+
+        // Update light level text description
+        let lightDesc = "Medium";
+        if (simulationState.light < 25) lightDesc = "Very Low";
+        else if (simulationState.light < 40) lightDesc = "Low";
+        else if (simulationState.light > 75) lightDesc = "Very High";
+        else if (simulationState.light > 60) lightDesc = "High";
+
+        lightValue.textContent = lightDesc;
+        updateStats();
+      });
+
+      initialPopulationInput.addEventListener("input", () => {
+        simulationState.initialPopulation = parseInt(
+          initialPopulationInput.value
+        );
+        initialPopulationValue.textContent = simulationState.initialPopulation;
+      });
+
+      growthRateInput.addEventListener("input", () => {
+        simulationState.growthRate = parseFloat(growthRateInput.value);
+        growthRateValue.textContent = simulationState.growthRate.toFixed(1);
+        updateStats();
+      });
+
+      startButton.addEventListener("click", () => {
+        if (simulationState.running) return;
+
+        simulationState.running = true;
+        simulationState.interval = setInterval(() => {
+          propagateMosses();
+          simulationState.frameCount++;
+
+          // Every 10 frames, simulate seasonal changes if growth rate > 2
+          if (
+            simulationState.frameCount % 10 === 0 &&
+            simulationState.growthRate > 2
+          ) {
+            const randomFactor = Math.random() * 10 - 5;
+            humidityInput.value = Math.max(
+              0,
+              Math.min(100, parseInt(humidityInput.value) + randomFactor)
+            );
+            simulationState.humidity = parseInt(humidityInput.value);
+            humidityValue.textContent = `${simulationState.humidity}%`;
+          }
+        }, 1000);
+      });
+
+      pauseButton.addEventListener("click", () => {
+        simulationState.running = false;
+        clearInterval(simulationState.interval);
+      });
+
+      resetButton.addEventListener("click", () => {
+        simulationState.running = false;
+        clearInterval(simulationState.interval);
+        initializeMosses();
+      });
+
+      // Terrain selector functionality
+      terrainOptions.forEach((option) => {
+        option.addEventListener("click", () => {
+          // Remove active class from all options
+          terrainOptions.forEach((opt) => opt.classList.remove("active"));
+
+          // Add active class to clicked option
+          option.classList.add("active");
+
+          // Update terrain
+          simulationState.terrain = option.dataset.terrain;
+
+          // Reset simulation with new terrain
+          simulationState.running = false;
+          clearInterval(simulationState.interval);
+          initializeMosses();
+
+          // Update optimal conditions text
+          updateStats();
+        });
+      });
+
+      // Advanced Moss behavior: Environmental response
+      function simulateEnvironmentalResponse() {
+        // Simulate moss responding to environmental conditions
+        if (!simulationState.running) return;
+
+        mosses.forEach((moss) => {
+          if (!moss.active) return;
+
+          // Adjust color based on light conditions
+          if (simulationState.light > 80) {
+            // In high light, moss might get lighter/yellower
+            moss.color = mossColors[simulationState.terrain][0];
+          } else if (simulationState.light < 20) {
+            // In low light, moss might get darker
+            moss.color = mossColors[simulationState.terrain][3];
+          } else {
+            // Normal conditions - use standard colors
+            moss.color =
+              mossColors[simulationState.terrain][
+                Math.floor(
+                  Math.random() * mossColors[simulationState.terrain].length
+                )
+              ];
+          }
+
+          // Adjust growth pattern based on humidity
+          if (simulationState.humidity < 30) {
+            // Dry conditions - slower growth, smaller max size
+            moss.maxSize = Math.max(5, moss.maxSize * 0.95);
+          } else if (simulationState.humidity > 80) {
+            // Very humid - faster growth
+            moss.maxSize = Math.min(30, moss.maxSize * 1.02);
+          }
+
+          moss.updateAppearance();
+        });
+      }
+
+      // Add environmental response to simulation interval
+      setInterval(simulateEnvironmentalResponse, 5000);
+
+      // Initialize the simulation
+      initializeMosses();
+    </script>
+  </body>
+</html>
