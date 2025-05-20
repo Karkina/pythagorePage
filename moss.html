@@ -4,6 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Moss Propagation Interactive Guide</title>
+    <!-- MathJax for beautiful math rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+      .math-formula {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        text-align: center;
+        font-size: 1.2em;
+        border-left: 4px solid var(--primary);
+      }
+      .math-variable {
+        font-style: italic;
+        color: #2c3e50;
+      }
+    </style>
     <style>
       :root {
         --primary: #4caf50;
@@ -423,72 +441,92 @@
 
         <h3>Growth Rate Equation</h3>
         <p>The growth rate $G$ of moss can be expressed as:</p>
-        <div class="formula">
-          <p>$G = R \times H(h) \times L(l)$</p>
+        <div class="math-formula">
+          \[ G = R \times H(h) \times L(l) \]
         </div>
         <p>Where:</p>
         <ul>
-          <li>
-            $R$ is the intrinsic growth rate, a constant specific to the moss
-            species.
-          </li>
-          <li>
-            $H(h)$ is the humidity factor, a function of humidity $h$, defined
-            as: $H(h) = \begin{cases} 0.3 & \text{if } h < 30 \\ 0.7 & \text{if
-            } 30 \leq h < 50 \\ 0.9 & \text{if } 50 \leq h < 70 \\ 1.0 &
-            \text{if } h \geq 70 \end{cases}$
-          </li>
-          <li>
-            $L(l)$ is the light factor, a function of light $l$, defined as:
-            $L(l) = \begin{cases} 0.5 & \text{if } l < 20 \\ 0.9 & \text{if } 20
-            \leq l < 40 \\ 1.0 & \text{if } 40 \leq l < 70 \\ 0.7 & \text{if }
-            70 \leq l < 85 \\ 0.4 & \text{if } l \geq 85 \end{cases}$
-          </li>
+          <li><span class="math-variable">G</span> is the growth rate (mm²/day)</li>
+          <li><span class="math-variable">R</span> is the intrinsic growth rate constant (mm²/day)</li>
+          <li><span class="math-variable">H(h)</span> is the humidity factor function (0-1)</li>
+          <li><span class="math-variable">L(l)</span> is the light factor function (0-1)</li>
+          <li><span class="math-variable">h</span> is the humidity level (%)</li>
+          <li><span class="math-variable">l</span> is the light intensity (lux)</li>
+        </ul>
+
+        <h3>Humidity Factor Function</h3>
+        <p>The humidity factor follows a sigmoidal response curve:</p>
+        <div class="math-formula">
+          \[ H(h) = \frac{1}{1 + e^{-k_h(h - h_0)}} \]
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li><span class="math-variable">k<sub>h</sub></span> is the humidity sensitivity parameter</li>
+          <li><span class="math-variable">h<sub>0</sub></span> is the humidity level at 50% growth rate</li>
+        </ul>
+
+        <h3>Light Factor Function</h3>
+        <p>The light factor follows a modified Michaelis-Menten equation:</p>
+        <div class="math-formula">
+          \[ L(l) = \frac{l}{K_l + l} \times \left(1 - \frac{l}{l_{max}}\right) \]
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li><span class="math-variable">K<sub>l</sub></span> is the half-saturation constant for light (lux)</li>
+          <li><span class="math-variable">l<sub>max</sub></span> is the light intensity at which growth is maximized (lux)</li>
         </ul>
 
         <h3>Propagation Probability</h3>
-        <p>
-          The probability $P$ of moss propagation can be modeled as a function
-          of growth stage $s$ and environmental conditions:
-        </p>
-        <div class="formula">
-          <p>$P(s, h, l) = \alpha \times s \times H(h) \times L(l)$</p>
+        <p>The probability of a moss patch propagating to a nearby area is given by:</p>
+        <div class="math-formula">
+          \[ P_{prop} = P_0 \times \left(1 - e^{-\alpha G}\right) \]
+        </div>
+        <p>Where:</p>
+        <ul>
+          <li><span class="math-variable">P<sub>0</sub></span> is the base propagation probability (0-1)</li>
+          <li><span class="math-variable">α</span> is a scaling factor (mm⁻²·day)</li>
+        </ul>
+
+        <h3>Moss Patch Area Growth</h3>
+        <p>The change in area of a moss patch over time can be modeled as:</p>
+        <div class="math-formula">
+          \[ \frac{dA}{dt} = \pi r^2 G \left(1 - \frac{A}{A_{max}}\right) \]
+        </div>
+        <p>Where:</p>
+        <ul>
+
+        <h3>Propagation Probability</h3>
+        <p>The probability $P$ of moss propagation can be modeled as a function of growth stage $s$ and environmental conditions:</p>
+        <div class="math-formula">
+          \[ P(s, h, l) = \alpha \times s \times H(h) \times L(l) \]
         </div>
         <p>Where:</p>
         <ul>
           <li>
-            $\alpha$ is a propagation constant, representing the likelihood of
-            new moss patches forming.
+            $\alpha$ is a propagation constant, representing the likelihood of new moss patches forming.
           </li>
           <li>
-            $s$ is the growth stage, with values ranging from 0 (new) to 3
-            (mature).
+            $s$ is the growth stage, with values ranging from 0 (new) to 3 (mature).
           </li>
         </ul>
 
         <h3>Spread Distance</h3>
-        <p>
-          The average spread distance $D$ of new moss patches can be influenced
-          by terrain and environmental factors:
-        </p>
-        <div class="formula">
-          <p>$D = \beta \times T(t) \times H(h) \times L(l)$</p>
+        <p>The average spread distance $D$ of new moss patches can be influenced by terrain and environmental factors:</p>
+        <div class="math-formula">
+          \[ D = \beta \times T(t) \times H(h) \times L(l) \]
         </div>
         <p>Where:</p>
         <ul>
           <li>
-            $\beta$ is a distance constant, representing the typical spread
-            range.
+            $\beta$ is a distance constant, representing the typical spread range.
           </li>
           <li>
-            $T(t)$ is the terrain factor, a function of terrain type $t$,
-            affecting spread distance.
+            $T(t)$ is the terrain factor, a function of terrain type $t$, affecting spread distance.
           </li>
         </ul>
 
         <p>
-          These mathematical models provide a comprehensive framework for
-          simulating moss propagation, aiding in ecological research and
+          These mathematical models provide a comprehensive framework for simulating moss propagation, aiding in ecological research and conservation planning.
           conservation planning.
         </p>
       </section>
