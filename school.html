@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student-Centered Self-Sufficient School</title>
+    <style>
+        :root {
+            --primary-color: #2c8c6f;
+            --secondary-color: #f3f7ee;
+            --accent-color: #e67e22;
+            --text-color: #333;
+            --light-text: #666;
+            --card-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-color), #1a6e5a);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .hero {
+            padding: 4rem 2rem;
+            background: url('/api/placeholder/1200/400') center/cover;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            background-color: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        section {
+            padding: 5rem 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+        }
+        
+        .features {
+            background-color: var(--secondary-color);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .vision-mission {
+            background-color: white;
+        }
+        
+        .vision-mission-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .vision-box, .mission-box {
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .vision-box {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .mission-box {
+            background-color: var(--secondary-color);
+        }
+        
+        .education-approach {
+            background-color: var(--secondary-color);
+        }
+        
+        .approach-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .approach-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .approach-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .testimonials {
+            background-color: white;
+        }
+        
+        .testimonial-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 5rem;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            color: rgba(44, 140, 111, 0.1);
+            font-family: Georgia, serif;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .call-to-action {
+            background: linear-gradient(to right, var(--primary-color), #1a6e5a);
+            color: white;
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        
+        .call-to-action h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .call-to-action p {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .social-icon {
+            font-size: 1.5rem;
+            color: white;
+            transition: color 0.3s;
+        }
+        
+        .social-icon:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Student-Centered Self-Sufficient School</h1>
+            <p>Reimagining Education as a Community Experience</p>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Education Reimagined</h1>
+            <p>A revolutionary educational model where students are the main characters in a self-sufficient learning community. We're not just teaching subjects; we're building a generation of independent, capable, and collaborative individuals.</p>
+            <a href="#contact" class="btn">Join Our Vision</a>
+        </div>
+    </section>
+
+    <section class="vision-mission" id="vision">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Our Vision & Mission</h2>
+                <p>Creating a new paradigm in education</p>
+            </div>
+            <div class="vision-mission-container">
+                <div class="vision-box animate">
+                    <h3>Our Vision</h3>
+                    <p>To create an educational community where students take center stage in their learning journey, developing into self-reliant individuals through practical experiences and collaborative living.</p>
+                    <p>We envision a school that functions like a village, where every member contributes meaningfully to the community while receiving a world-class education that prepares them for life's challenges.</p>
+                </div>
+                <div class="mission-box animate">
+                    <h3>Our Mission</h3>
+                    <p>To foster independence, camaraderie, and practical learning through:</p>
+                    <ul>
+                        <li>Creating an environment where students learn by doing</li>
+                        <li>Building strong bonds through community living</li>
+                        <li>Developing life skills alongside academic excellence</li>
+                        <li>Nurturing leadership through responsibility</li>
+                        <li>Encouraging innovation and critical thinking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Key Features</h2>
+                <p>What makes our school unique</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card animate">
+                    <div class="feature-icon">🌱</div>
+                    <h3>Self-Sufficiency</h3>
+                    <p>Students participate in essential daily tasks such as cleaning, cooking, and maintaining the school grounds. These activities are integrated into the curriculum, teaching practical life skills while fostering a sense of ownership and responsibility.</p>
+                    <p>By contributing to the community's needs, students develop independence and an appreciation for sustainable living practices.</p>
+                </div>
+                <div class="feature-card animate">
+                    <div class="feature-icon">🏡</div>
+                    <h3>Community Living</h3>
+                    <p>Our school functions as a complete living community where students, teachers, and staff reside together. This arrangement creates a family-like atmosphere that strengthens relationships and promotes continuous learning beyond formal classroom hours.</p>
+                    <p>The residential aspect helps develop deep social bonds and teaches students invaluable lessons in cooperation, empathy, and conflict resolution.</p>
+                </div>
+                <div class="feature-card animate">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Holistic Development</h3>
+                    <p>We place equal emphasis on physical health, emotional wellbeing, and intellectual growth. Regular sports activities, balanced nutrition, and community events are integral parts of student life.</p>
+                    <p>The holistic approach ensures that students develop into well-rounded individuals who are healthy in mind, body, and spirit.</p>
+                </div>
+                <div class="feature-card animate">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Educational Approach</h3>
+                    <p>Our educational philosophy combines traditional academic excellence with experiential learning. Professors serve as mentors and guides, while older students mentor younger ones, creating a continuous chain of knowledge transfer.</p>
+                    <p>This approach ensures that learning is deeply contextual, immediately applicable, and reinforced through teaching others.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="education-approach" id="education">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Our Educational Approach</h2>
+                <p>Learning through living and doing</p>
+            </div>
+            <div class="approach-content">
+                <div class="approach-item animate">
+                    <h3>Peer Mentoring System</h3>
+                    <p>Our unique mentoring system pairs older students with younger ones, creating a supportive learning environment where knowledge is passed down through generations of students. This not only reinforces learning for the mentors but also provides accessible role models for younger students.</p>
+                </div>
+                <div class="approach-item animate">
+                    <h3>Hands-On Learning</h3>
+                    <p>We believe in learning by doing. Whether it's physics concepts applied through building structures, biology learned in our gardens, or mathematics used in cooking and resource management, our curriculum connects theoretical knowledge with practical applications.</p>
+                </div>
+                <div class="approach-item animate">
+                    <h3>Professional Guidance</h3>
+                    <p>Experienced educators serve as guides rather than traditional teachers. They design learning frameworks, provide expert knowledge when needed, and ensure educational standards are met while allowing students the freedom to explore and discover.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Voices of Support</h2>
+                <p>What education experts say about our model</p>
+            </div>
+            <div class="testimonial-container">
+                <div class="testimonial-card animate">
+                    <div class="testimonial-content">
+                        "This model represents the future of education. By creating a self-sufficient learning community, students develop critical thinking and problem-solving skills in context, preparing them for the complex challenges of the modern world."
+                    </div>
+                    <div class="testimonial-author">Dr. Emma Richardson, Education Innovation Specialist</div>
+                </div>
+                <div class="testimonial-card animate">
+                    <div class="testimonial-content">
+                        "The self-sufficient school concept addresses many problems in traditional education. It naturally integrates practical skills, emotional intelligence, and academic knowledge in a way that makes learning meaningful and engaging."
+                    </div>
+                    <div class="testimonial-author">Prof. Michael Chen, Child Development Researcher</div>
+                </div>
+                <div class="testimonial-card animate">
+                    <div class="testimonial-content">
+                        "What impresses me most about this model is how it cultivates responsibility and community awareness. These students won't just be academically prepared; they'll be ready to become active, thoughtful citizens of the world."
+                    </div>
+                    <div class="testimonial-author">Sarah Patel, Sustainable Education Advocate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="call-to-action" id="contact">
+        <div class="container">
+            <h2>Join Us in Reshaping Education</h2>
+            <p>We're seeking passionate educators, supporters, and collaborators to help bring this vision to life. Whether you'd like to contribute ideas, resources, or expertise, your involvement can help transform how we prepare the next generation.</p>
+            <a href="#" class="btn">Get Involved</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <h3>Student-Centered Self-Sufficient School</h3>
+            <p>Building tomorrow's leaders through community, responsibility, and experiential learning</p>
+            <div class="social-icons">
+                <a href="#" class="social-icon">📱</a>
+                <a href="#" class="social-icon">📧</a>
+                <a href="#" class="social-icon">🌐</a>
+            </div>
+            <p>© 2025 Student-Centered Self-Sufficient School. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
